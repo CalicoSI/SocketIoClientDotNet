@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Linq;
 using System.Collections.Immutable;
 using Quobject.EngineIoClientDotNet.ComponentEmitter;
 using Quobject.EngineIoClientDotNet.Modules;
@@ -65,6 +65,10 @@ namespace Quobject.SocketIoClientDotNet.Client
             Subs = Subs.Enqueue(Client.On.Create(io, Manager.EVENT_CLOSE, new ListenerImpl((data) => OnClose((string)data))));
         }
 
+        public Boolean isConnected()
+        {
+            return Connected;
+        }
 
         public Socket Open()
         {
@@ -216,6 +220,7 @@ namespace Quobject.SocketIoClientDotNet.Client
             log.Info(string.Format("close ({0})", reason));
             Connected = false;
             Emit(EVENT_DISCONNECT, reason);
+            _io.OnCloseForSocket("");
         }
 
         private void OnPacket(Packet packet)
@@ -368,7 +373,7 @@ namespace Quobject.SocketIoClientDotNet.Client
         {
             var log = LogManager.GetLogger(Global.CallerName());
             log.Info(string.Format("server disconnect ({0})", this.Nsp));
-            Destroy();
+            //Destroy();
             OnClose("io server disconnect");
         }
 

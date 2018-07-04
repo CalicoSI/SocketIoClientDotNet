@@ -1,4 +1,4 @@
-﻿using System.Collections.Immutable;
+using System.Collections.Immutable;
 using Quobject.EngineIoClientDotNet.ComponentEmitter;
 using Quobject.EngineIoClientDotNet.Modules;
 using Quobject.EngineIoClientDotNet.Thread;
@@ -434,6 +434,17 @@ namespace Quobject.SocketIoClientDotNet.Client
             }
         }
 
+        public void OnCloseForSocket(string reason)
+        {
+            var log = LogManager.GetLogger(Global.CallerName());
+            log.Info("start");
+            Cleanup();
+            ReadyState = ReadyStateEnum.CLOSED;
+            if (_reconnection && !SkipReconnect)
+            {
+                Reconnect();
+            }
+        }
 
         private void Reconnect()
         {
